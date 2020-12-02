@@ -42,9 +42,9 @@ print(input)
 for (i in input) {
   for (j in input) {
     for (k in input) {
-      sum <- input[i] + input[j] + input[k]
+      sum <- i + j + k
       if (sum == 2020) {
-        print(input[i] * input[j] * input[k])
+        print(i * j * k)
       }
     }
   }
