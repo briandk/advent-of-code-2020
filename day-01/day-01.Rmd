@@ -5,6 +5,8 @@ date: "12/1/2020"
 output: html_document
 ---
 
+# Part 1
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(readr)
@@ -24,6 +26,28 @@ for (i in 1:input_size) {
   for (j in 1:input_size) {
     if (input[i] + input[j] == 2020) {
       print(input[i] * input[j])
+    }
+  }
+}
+```
+
+# Part 2
+
+```{r}
+input <-
+  readr::read_table("puzzle-input.txt", col_names = "input")[[1]]
+input_size <- length(input)
+print(input_size)
+
+x <-
+  tibble::as_tibble(matrix(1, length(input), length(input)), .name_repair = "unique")
+
+for (i in 1:input_size) {
+  for (j in 1:input_size) {
+    for (k in 1:input_size) {
+      if (input[i] + input[j] + input[k] == 2020) {
+        print(input[i] * input[j] * input[k])
+      }
     }
   }
 }
