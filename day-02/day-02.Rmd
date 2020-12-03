@@ -42,32 +42,32 @@ clean_data <- function(raw_input) {
         lower_limit = as.numeric(lower_lim),
         upper_limit = as.numeric(upper_lim)
       ) %>%
+      tibble::as_tibble() %>% 
       dplyr::select(lower_limit, upper_limit, req_letter, password)
   )
 }
 
 input <- clean_data(raw_input)
-
-check_password <-
-  function(pw,
-           req,
-           lower_lim,
-           upper_lim) {
-    output <- FALSE
-    for (i in lower_lim:upper_lim) {
-      pattern <- rep(req, i) %>% paste0(collapse = "")
-      print(glue::glue_data("Pattern is {pattern}"))
-      output <- stringr::str_detect(pw, pattern)
-    }
-    return(output)
-  }
-
 passwords <- raw_input %>% clean_data() %>% head()
 
 # check_password(passwords$password, passwords$req_letter, passwords$lower_limit, passwords$upper_limit)
+
+count_letter <- function(password, letter) {
+  pw <- password %>% 
+    stringr::str_split("") %>% 
+    purrr::flatten_chr()
+  count <- 0
+  for (l in pw) {
+    if (l == letter) {
+      count <- count + 1
+    }
+  }
+  return(count)
+}
+  
 passwords %>%
-  select(password, lower_limit, upper_limit, req_letter) %>%
-  dplyr::mutate(meets_reqs = check_password(password, req_letter, lower_limit, upper_limit))
+  dplyr::mutate(req_letter_count = count_letter(password, req_letter)) %>% 
+  print()
 ```
 
 
