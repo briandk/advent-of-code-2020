@@ -47,13 +47,13 @@ clean_data <- function(raw_input) {
   )
 }
   
-raw_input %>%
+passwords <- raw_input %>%
   clean_data() %>% 
   dplyr::mutate(req_letter_count = stringr::str_count(password, req_letter)) %>% 
-  dplyr::mutate(meets_req = (req_letter_count >= lower_limit) & (req_letter_count <= upper_limit)) %>% 
-  dplyr::select(meets_req) %>% 
-  dplyr::group_by(meets_req) %>% 
-  dplyr::summarize(n = n()) %>% 
+  dplyr::mutate(meets_req = (req_letter_count >= lower_limit) & (req_letter_count <= upper_limit)) 
+  
+passwords %>% 
+  dplyr::count(meets_req) %>% 
   print()
 ```
 
