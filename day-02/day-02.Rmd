@@ -46,27 +46,14 @@ clean_data <- function(raw_input) {
       dplyr::select(lower_limit, upper_limit, req_letter, password)
   )
 }
-
-input <- clean_data(raw_input)
-passwords <- raw_input %>% clean_data() %>% head()
-
-# check_password(passwords$password, passwords$req_letter, passwords$lower_limit, passwords$upper_limit)
-
-count_letter <- function(password, letter) {
-  pw <- password %>% 
-    stringr::str_split("") %>% 
-    purrr::flatten_chr()
-  count <- 0
-  for (l in pw) {
-    if (l == letter) {
-      count <- count + 1
-    }
-  }
-  return(count)
-}
   
-passwords %>%
-  dplyr::mutate(req_letter_count = count_letter(password, req_letter)) %>% 
+raw_input %>%
+  clean_data() %>% 
+  dplyr::mutate(req_letter_count = stringr::str_count(password, req_letter)) %>% 
+  dplyr::mutate(meets_req = (req_letter_count >= lower_limit) & (req_letter_count <= upper_limit)) %>% 
+  dplyr::select(meets_req) %>% 
+  dplyr::group_by(meets_req) %>% 
+  dplyr::summarize(n = n()) %>% 
   print()
 ```
 
