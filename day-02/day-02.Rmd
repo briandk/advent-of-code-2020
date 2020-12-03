@@ -1,0 +1,95 @@
+---
+title: "Advent of Code Day 01"
+author: "Brian A. Danielak"
+date: "12/1/2020"
+output: html_document
+---
+
+# Part 1
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(glue)
+library(magrittr)
+library(readr)
+library(stringr)
+```
+
+```{r}
+raw_input <-
+  readr::read_table("puzzle-input.txt", col_names = "input")
+```
+
+```{r}
+example <- tibble::tibble(input = "13-16 k: kkkkkgmkbvkkrskhd")
+
+clean_data <- function(raw_input) {
+  return(
+    raw_input %>%
+      tidyr::separate(input, into = c("reqs", "password"), sep = ":") %>%
+      tidyr::separate(
+        reqs,
+        into = c("limits", "req_letter"),
+        sep = " "
+      ) %>%
+      tidyr::separate(
+        limits,
+        into = c("lower_lim", "upper_lim"),
+        sep = "-"
+      ) %>%
+      dplyr::mutate(
+        lower_limit = as.numeric(lower_lim),
+        upper_limit = as.numeric(upper_lim)
+      ) %>%
+      dplyr::select(lower_limit, upper_limit, req_letter, password)
+  )
+}
+
+input <- clean_data(raw_input)
+
+check_password <-
+  function(password,
+           req_letter,
+           lower_limit,
+           upper_limit) {
+    output <- FALSE
+    for (i in lower_limit:upper_limit) {
+      pattern = rep(req_letter, i) %>% glue::glue_collapse()
+      output <-
+        dplyr::if_else(stringr::str_detect(password, pattern),
+                       TRUE,
+                       FALSE)
+      return(output)
+    }
+  }
+
+check_password("bbccccc", "c", , 50)
+
+# raw_input %>% 
+#   clean_data() %>% 
+#   dplyr::mutate(., meets_reqs = check_password(password, req_letter, lower_limit, upper_limit))
+```
+
+
+
+# Part 2
+
+```{r}
+input <-
+  readr::read_table("puzzle-input.txt", col_names = "input")[[1]]
+input_size <- length(input)
+print(input)
+
+for (i in input) {
+  for (j in input) {
+    for (k in input) {
+      sum <- i + j + k
+      if (sum == 2020) {
+        print(i * j * k)
+      }
+    }
+  }
+}
+```
+
