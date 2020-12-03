@@ -22,7 +22,7 @@ raw_input <-
 ```
 
 ```{r}
-example <- tibble::tibble(input = "13-16 k: kkkkkgmkbvkkrskhd")
+# example <- tibble::tibble(input = "13-16 k: kkkkkgmkbvkkrskhd")
 
 clean_data <- function(raw_input) {
   return(
@@ -49,26 +49,25 @@ clean_data <- function(raw_input) {
 input <- clean_data(raw_input)
 
 check_password <-
-  function(password,
-           req_letter,
-           lower_limit,
-           upper_limit) {
+  function(pw,
+           req,
+           lower_lim,
+           upper_lim) {
     output <- FALSE
-    for (i in lower_limit:upper_limit) {
-      pattern = rep(req_letter, i) %>% glue::glue_collapse()
-      output <-
-        dplyr::if_else(stringr::str_detect(password, pattern),
-                       TRUE,
-                       FALSE)
-      return(output)
+    for (i in lower_lim:upper_lim) {
+      pattern <- rep(req, i) %>% paste0(collapse = "")
+      print(glue::glue_data("Pattern is {pattern}"))
+      output <- stringr::str_detect(pw, pattern)
     }
+    return(output)
   }
 
-check_password("bbccccc", "c", , 50)
+passwords <- raw_input %>% clean_data() %>% head()
 
-# raw_input %>% 
-#   clean_data() %>% 
-#   dplyr::mutate(., meets_reqs = check_password(password, req_letter, lower_limit, upper_limit))
+# check_password(passwords$password, passwords$req_letter, passwords$lower_limit, passwords$upper_limit)
+passwords %>%
+  select(password, lower_limit, upper_limit, req_letter) %>%
+  dplyr::mutate(meets_reqs = check_password(password, req_letter, lower_limit, upper_limit))
 ```
 
 
@@ -76,20 +75,6 @@ check_password("bbccccc", "c", , 50)
 # Part 2
 
 ```{r}
-input <-
-  readr::read_table("puzzle-input.txt", col_names = "input")[[1]]
-input_size <- length(input)
-print(input)
 
-for (i in input) {
-  for (j in input) {
-    for (k in input) {
-      sum <- i + j + k
-      if (sum == 2020) {
-        print(i * j * k)
-      }
-    }
-  }
-}
 ```
 
