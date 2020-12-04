@@ -1,7 +1,7 @@
 ---
-title: "Advent of Code Day 01"
+title: "Advent of Code Day 02"
 author: "Brian A. Danielak"
-date: "12/1/2020"
+date: "12/3/2020"
 output: html_document
 ---
 
@@ -81,7 +81,7 @@ check_password("bbcaa", "a", 1, 4)
 check_password("kpkmkkckhkkkkvkk", "k", 9, 14)
 
 passwords %>%
-  # head(40) %>%
+  head() %>%
   dplyr::mutate() %>% 
   dplyr::mutate(meets_req = check_password(password, req_letter, lower_limit, upper_limit)) %>% 
   # dplyr::filter(meets_req == TRUE)
