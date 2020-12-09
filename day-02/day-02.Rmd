@@ -27,6 +27,7 @@ raw_input <-
 clean_data <- function(raw_input) {
   return(
     raw_input %>%
+      tibble::as_tibble() %>% 
       tidyr::separate(input, into = c("reqs", "password"), sep = ":") %>%
       tidyr::separate(
         reqs,
@@ -42,7 +43,6 @@ clean_data <- function(raw_input) {
         lower_limit = as.numeric(lower_lim),
         upper_limit = as.numeric(upper_lim)
       ) %>%
-      tibble::as_tibble() %>% 
       dplyr::select(lower_limit, upper_limit, req_letter, password)
   )
 }
@@ -73,19 +73,21 @@ check_password <-
       purrr::flatten_chr()
     lower_letter <- pw[lower_lim]
     upper_letter <- pw[upper_lim]
+    # browser()
     return(xor(lower_letter == req_letter,
                upper_letter == req_letter))
   }
 
-check_password("bbcaa", "a", 1, 4)
-check_password("kpkmkkckhkkkkvkk", "k", 9, 14)
+check_password("bbcaa", "a", 1, 4) # expect to be TRUE
+check_password("kpkmkkckhkkkkvkk", "k", 9, 14) # expect FALSE
+check_password("abcaa", "a", 1, 4) # expect FALSE
+check_password("bbcaa", "b", 1, 4) # expect TRUE
 
 passwords %>%
-  head() %>%
-  dplyr::mutate() %>% 
+  dplyr::rowwise() %>% 
   dplyr::mutate(meets_req = check_password(password, req_letter, lower_limit, upper_limit)) %>% 
-  # dplyr::filter(meets_req == TRUE)
-  dplyr::count(meets_req)
+  dplyr::filter(meets_req == TRUE)
+  # dplyr::count(meets_req)
   
 ```
 
