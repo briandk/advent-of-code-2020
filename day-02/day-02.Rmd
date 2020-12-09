@@ -28,7 +28,7 @@ clean_data <- function(raw_input) {
   return(
     raw_input %>%
       tibble::as_tibble() %>% 
-      tidyr::separate(input, into = c("reqs", "password"), sep = ":") %>%
+      tidyr::separate(input, into = c("reqs", "raw_password"), sep = ":") %>%
       tidyr::separate(
         reqs,
         into = c("limits", "req_letter"),
@@ -41,7 +41,8 @@ clean_data <- function(raw_input) {
       ) %>%
       dplyr::mutate(
         lower_limit = as.numeric(lower_lim),
-        upper_limit = as.numeric(upper_lim)
+        upper_limit = as.numeric(upper_lim),
+        password = stringr::str_trim(raw_password)
       ) %>%
       dplyr::select(lower_limit, upper_limit, req_letter, password)
   )
@@ -86,8 +87,8 @@ check_password("bbcaa", "b", 1, 4) # expect TRUE
 passwords %>%
   dplyr::rowwise() %>% 
   dplyr::mutate(meets_req = check_password(password, req_letter, lower_limit, upper_limit)) %>% 
-  dplyr::filter(meets_req == TRUE)
-  # dplyr::count(meets_req)
+  dplyr::filter(meets_req == TRUE) %>% 
+  dplyr::count(meets_req)
   
 ```
 
